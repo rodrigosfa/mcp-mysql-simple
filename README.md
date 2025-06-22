@@ -45,10 +45,10 @@ Com base na sua configuração, defina as variáveis de ambiente:
 
 ```bash
 export MYSQL_HOST=127.0.0.1
-export MYSQL_PORT=3307
-export MYSQL_USER=root
-export MYSQL_PASS=root
-export MYSQL_DB=voompcreators_back
+export MYSQL_PORT=
+export MYSQL_USER=
+export MYSQL_PASS=
+export MYSQL_DB=
 ```
 
 ### 3. Compilar o Projeto
@@ -80,11 +80,11 @@ Para usar este servidor com Claude Desktop, adicione ao seu `claude_desktop_conf
       "command": "node",
       "args": ["/home/fabio/mcp-server-fabio/dist/index.js"],
       "env": {
-        "MYSQL_HOST": "127.0.0.1",
-        "MYSQL_PORT": "3307",
-        "MYSQL_USER": "root",
-        "MYSQL_PASS": "root",
-        "MYSQL_DB": "voompcreators_back"
+        "MYSQL_HOST": "",
+        "MYSQL_PORT": "",
+        "MYSQL_USER": "",
+        "MYSQL_PASS": "",
+        "MYSQL_DB": ""
       }
     }
   }

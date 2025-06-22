@@ -6,15 +6,20 @@
  */
 
 import { spawn } from "child_process";
+import { config } from "dotenv";
 
-// Configurações do seu banco
+// Carrega as variáveis de ambiente do arquivo .env
+config();
+
+// Configurações do banco a partir das variáveis de ambiente
 const env = {
   ...process.env,
-  MYSQL_HOST: "127.0.0.1",
-  MYSQL_PORT: "3307",
-  MYSQL_USER: "root",
-  MYSQL_PASS: "root",
-  MYSQL_DB: "voompcreators_back",
+  // As variáveis já foram carregadas pelo dotenv, apenas garantimos que estão disponíveis
+  MYSQL_HOST: process.env.MYSQL_HOST || "localhost",
+  MYSQL_PORT: process.env.MYSQL_PORT || "3306",
+  MYSQL_USER: process.env.MYSQL_USER || "root",
+  MYSQL_PASS: process.env.MYSQL_PASS || process.env.MYSQL_PASSWORD || "",
+  MYSQL_DB: process.env.MYSQL_DB || process.env.MYSQL_DATABASE,
 };
 
 console.log("🧪 Testando servidor MCP MySQL...\n");

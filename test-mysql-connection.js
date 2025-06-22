@@ -6,28 +6,32 @@
  */
 
 import mysql from "mysql2/promise";
+import { config } from "dotenv";
 
-// Configurações do seu banco
-const config = {
-  host: "127.0.0.1",
-  port: 3307,
-  user: "root",
-  password: "root",
-  database: "voompcreators_back",
+// Carrega as variáveis de ambiente do arquivo .env
+config();
+
+// Configurações do banco a partir das variáveis de ambiente
+const dbConfig = {
+  host: process.env.MYSQL_HOST || "localhost",
+  port: parseInt(process.env.MYSQL_PORT || "3306"),
+  user: process.env.MYSQL_USER || "root",
+  password: process.env.MYSQL_PASSWORD || process.env.MYSQL_PASS || "",
+  database: process.env.MYSQL_DATABASE || process.env.MYSQL_DB,
 };
 
 async function testMySQLConnection() {
   console.log("🔍 Testando conexão com MySQL...");
-  console.log(`📡 Host: ${config.host}:${config.port}`);
-  console.log(`👤 Usuário: ${config.user}`);
-  console.log(`🗃️ Banco: ${config.database}\n`);
+  console.log(`📡 Host: ${dbConfig.host}:${dbConfig.port}`);
+  console.log(`👤 Usuário: ${dbConfig.user}`);
+  console.log(`🗃️ Banco: ${dbConfig.database}\n`);
 
   let connection = null;
 
   try {
     // Tentar conectar
     console.log("🔗 Conectando...");
-    connection = await mysql.createConnection(config);
+    connection = await mysql.createConnection(dbConfig);
     console.log("✅ Conexão estabelecida com sucesso!\n");
 
     // Testar queries básicas
@@ -104,7 +108,7 @@ async function testMySQLConnection() {
     console.error("\n🔧 Possíveis soluções:");
     console.error("   • Verifique se o MySQL está rodando na porta 3307");
     console.error("   • Confirme se as credenciais estão corretas");
-    console.error('   • Verifique se o banco "voompcreators_back" existe');
+    console.error("   • Verifique se o banco existe");
     console.error(
       "   • Teste a conexão: mysql -h 127.0.0.1 -P 3307 -u root -p"
     );
