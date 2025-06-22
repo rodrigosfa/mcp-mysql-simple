@@ -31,6 +31,10 @@ Templates pré-definidos para o usuário:
 - `find_large_tables`: Encontra tabelas com mais registros
 - `database_overview`: Visão geral do banco de dados
 
+### 4. **Arquitetura**
+
+![Diagrama de Arquitetura MCP-MySQL](/docs/architecture.png)
+
 ## 🚀 Como Usar
 
 ### 1. Instalar Dependências
