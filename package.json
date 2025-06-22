@@ -1,0 +1,32 @@
+{
+  "name": "mcp-mysql-server-simple",
+  "version": "1.0.0",
+  "description": "Servidor MCP simples para MySQL - Criado para aprender o protocolo MCP",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "mysql2": "^3.11.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "mcp",
+    "mysql",
+    "server",
+    "typescript"
+  ],
+  "author": "Fabio",
+  "license": "MIT"
+}

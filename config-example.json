@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "mysql-voompcreators": {
+      "command": "node",
+      "args": ["/home/fabio/mcp-server-fabio/dist/index.js"],
+      "env": {
+        "MYSQL_HOST": "127.0.0.1",
+        "MYSQL_PORT": "3307",
+        "MYSQL_USER": "root",
+        "MYSQL_PASS": "root",
+        "MYSQL_DB": "voompcreators_back"
+      }
+    }
+  }
+}
