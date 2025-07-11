@@ -7,12 +7,13 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "tsx src/index.ts"
+    "dev": "tsx src/index.ts",
+    "test-connection": "node test-mysql-connection.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.4",
-    "dotenv": "^16.5.0",
-    "mysql2": "^3.11.4"
+    "dotenv": "^16.6.1",
+    "mysql2": "^3.14.1"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

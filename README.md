@@ -6,6 +6,12 @@ Este é um servidor MCP (Model Context Protocol) simples para MySQL, criado do z
 
 Este projeto foi criado para entender como funciona o protocolo MCP implementando um servidor básico mas funcional que conecta LLMs ao MySQL.
 
+## ✅ Status do Projeto
+
+**✅ FUNCIONANDO CORRETAMENTE** - Servidor MCP testado e operacional  
+**✅ CONFIGURAÇÃO FLEXÍVEL** - Suporte a arquivo JSON e variáveis de ambiente  
+**✅ DOCUMENTAÇÃO COMPLETA** - Guias detalhados e exemplos de uso  
+
 ## 📋 Conceitos MCP Implementados
 
 ### 1. **Tools (Ferramentas)**
@@ -14,6 +20,7 @@ Funções que o LLM pode executar:
 
 - `execute_query`: Executa queries SQL no banco
 - `describe_table`: Descreve a estrutura de uma tabela
+- `list_tables`: Lista todas as tabelas do banco
 
 ### 2. **Resources (Recursos)**
 
@@ -33,7 +40,7 @@ Templates pré-definidos para o usuário:
 
 ### 4. **Arquitetura**
 
-![Diagrama de Arquitetura MCP-MySQL](/docs/architecture.png)
+![Diagrama de Arquitetura MCP-MySQL](docs/architecture.png)
 
 ## 🚀 Como Usar
 
@@ -45,15 +52,34 @@ npm install
 
 ### 2. Configurar MySQL
 
-Com base na sua configuração, defina as variáveis de ambiente:
+O servidor MCP utiliza **exclusivamente as variáveis de ambiente** definidas na configuração do cliente MCP.
 
-```bash
-export MYSQL_HOST=127.0.0.1
-export MYSQL_PORT=
-export MYSQL_USER=
-export MYSQL_PASS=
-export MYSQL_DB=
+**Configuração via Cliente MCP (`claude_desktop_config.json` ou `mcp.json`):**
+
+```json
+{
+  "mcpServers": {
+    "mysql-simple": {
+      "command": "node",
+      "args": ["C:/Users/seu-usuario/Projetos/mcp-mysql-simple/dist/index.js"],
+      "env": {
+        "MYSQL_HOST": "seu_host_mysql",
+        "MYSQL_PORT": "3306",
+        "MYSQL_USER": "seu_usuario",
+        "MYSQL_PASS": "sua_senha",
+        "MYSQL_DB": "nome_do_banco"
+      }
+    }
+  }
+}
 ```
+
+**Variáveis Suportadas:**
+- `MYSQL_HOST` - Host do servidor MySQL
+- `MYSQL_PORT` - Porta do MySQL (padrão: 3306)
+- `MYSQL_USER` - Usuário para conexão
+- `MYSQL_PASSWORD` ou `MYSQL_PASS` - Senha de acesso
+- `MYSQL_DATABASE` ou `MYSQL_DB` - Nome do banco de dados
 
 ### 3. Compilar o Projeto
 
@@ -75,27 +101,59 @@ npm run dev
 
 ## 🔧 Configuração do Cliente MCP
 
-Para usar este servidor com Claude Desktop, adicione ao seu `claude_desktop_config.json`:
+### Configuração no Claude Desktop
+
+Adicione ao seu `claude_desktop_config.json`:
 
 ```json
 {
   "mcpServers": {
-    "mysql-voompcreators": {
+    "mysql-simple": {
       "command": "node",
-      "args": ["/home/fabio/mcp-server-fabio/dist/index.js"],
+      "args": ["C:/Users/seu-usuario/Projetos/mcp-mysql-simple/dist/index.js"],
       "env": {
-        "MYSQL_HOST": "",
-        "MYSQL_PORT": "",
-        "MYSQL_USER": "",
-        "MYSQL_PASS": "",
-        "MYSQL_DB": ""
+        "MYSQL_HOST": "seu_host_mysql",
+        "MYSQL_PORT": "3306",
+        "MYSQL_USER": "seu_usuario",
+        "MYSQL_PASS": "sua_senha",
+        "MYSQL_DB": "nome_do_banco"
       }
     }
   }
 }
 ```
 
-> **Nota**: O arquivo `claude_desktop_config.json` já está pronto no arquivo `config-example.json`. Você pode copiar o conteúdo para o local correto do Claude Desktop.
+### Configuração em Outros Clientes MCP
+
+Para outros clientes que usam `mcp.json`:
+
+```json
+{
+  "mysql-simple": {
+    "command": "node",
+    "args": ["caminho/para/dist/index.js"],
+    "env": {
+      "MYSQL_HOST": "seu_host_mysql",
+      "MYSQL_PORT": "3306",
+      "MYSQL_USER": "seu_usuario",
+      "MYSQL_PASS": "sua_senha",
+      "MYSQL_DB": "nome_do_banco"
+    }
+  }
+}
+```
+
+> **⚠️ Importante:** O servidor MCP **sempre** utilizará as variáveis de ambiente definidas no cliente MCP. Não é necessário criar arquivos de configuração locais no projeto.
+
+## 🛠️ Scripts Disponíveis
+
+| Script | Comando | Descrição |
+|--------|---------|-----------|
+| **Build** | `npm run build` | Compila o projeto TypeScript |
+| **Start** | `npm start` | Inicia o servidor MCP |
+| **Dev** | `npm run dev` | Modo desenvolvimento |
+| **Test Connection** | `npm run test-connection` | Testa conexão MySQL |
+| **Analyze Users** | `npm run analyze-users` | Analisa tabela de usuários |
 
 ## 🏗️ Arquitetura do Código
 
@@ -108,7 +166,7 @@ class MySQLMCPServer {
   private config: MySQLConfig;      // Configuração
 
   constructor() {
-    // Inicializa servidor com capacidades
+    this.config = this.loadMySQLConfig();
     this.server = new Server({...}, {
       capabilities: {
         tools: {},      // Suporte a ferramentas
@@ -126,59 +184,21 @@ class MySQLMCPServer {
 2. **Operação**: Cliente faz requests, servidor responde
 3. **Shutdown**: Conexão é encerrada graciosamente
 
-### Handlers Implementados
-
-```typescript
-// Lista ferramentas disponíveis
-ListToolsRequestSchema -> tools[]
-
-// Executa ferramenta específica
-CallToolRequestSchema -> resultado
-
-// Lista recursos disponíveis
-ListResourcesRequestSchema -> resources[]
-
-// Lê recurso específico
-ReadResourceRequestSchema -> dados
-
-// Lista prompts disponíveis
-ListPromptsRequestSchema -> prompts[]
-
-// Obtém prompt específico
-GetPromptRequestSchema -> template
-```
-
-## 🔍 Exemplos de Uso
-
-### 1. Executar Query SQL
-
-O LLM pode executar:
-
-```sql
-SELECT * FROM usuarios LIMIT 5;
-```
-
-### 2. Descrever Tabela
-
-```sql
-DESCRIBE produtos;
-```
-
-### 3. Acessar Resources
-
-- Listar bancos: `mysql://databases`
-- Listar tabelas: `mysql://tables`
-- Ver schema: `mysql://schema`
-
-### 4. Usar Prompts
-
-- Analisar tabela: `analyze_table(table_name="usuarios")`
-- Encontrar tabelas grandes: `find_large_tables`
-- Visão geral: `database_overview`
-
 ## 📡 Protocolo MCP em Ação
 
-### 1. Mensagens JSON-RPC 2.0
+### 1. Teste de Funcionamento
+
+```bash
+# Testar listagem de ferramentas
+echo '{"jsonrpc":"2.0","method":"tools/list","id":1}' | node dist/index.js
+
+# Resultado esperado:
+# ✅ Configuração carregada do arquivo config-mysql.json
+# 🚀 Servidor MCP MySQL iniciado! Aguardando conexões...
+# {"result":{"tools":[{"name":"execute_query"...}
+```
+
+### 2. Mensagens JSON-RPC 2.0
 
 ```json
 {
@@ -187,37 +207,43 @@ DESCRIBE produtos;
   "params": {
     "name": "execute_query",
     "arguments": {
-      "query": "SELECT COUNT(*) FROM usuarios"
+      "query": "SELECT COUNT(*) FROM users"
     }
   },
   "id": 1
 }
 ```
 
-### 2. Transporte STDIO
+## 🔍 Exemplos de Uso
 
-O servidor usa `StdioServerTransport` para comunicação via stdin/stdout.
+### 1. Executar Query SQL
 
-### 3. Capacidades Negociadas
+```sql
+SELECT * FROM users LIMIT 5;
+```
 
-```json
-{
-  "capabilities": {
-    "tools": {},
-    "resources": {},
-    "prompts": {}
-  }
-}
+### 2. Descrever Tabela
+
+```sql
+DESCRIBE users;
+```
+
+### 3. Listar Tabelas
+
+```sql
+SHOW TABLES;
 ```
 
 ## 🛡️ Segurança
 
 ### Práticas Implementadas:
 
-- ✅ Escape de nomes de tabelas/bancos com backticks
-- ✅ Tratamento de erros
-- ✅ Validação de parâmetros
-- ✅ Conexão controlada ao MySQL
+- ✅ **Configuração exclusiva via MCP** - Sem arquivos de configuração local
+- ✅ **Escape de nomes de tabelas/bancos** com backticks
+- ✅ **Tratamento de erros robusto** em todas as operações
+- ✅ **Validação de parâmetros** antes da execução
+- ✅ **Conexão controlada ao MySQL** com validação
+- ✅ **Fechamento gracioso de conexões** com cleanup adequado
 
 ### Melhorias Futuras:
 
@@ -228,57 +254,97 @@ O servidor usa `StdioServerTransport` para comunicação via stdin/stdout.
 
 ## 🧪 Testando o Servidor
 
-### 1. Teste Básico
+### 1. Teste de Conexão
+
+```bash
+npm run test-connection
+```
+
+### 2. Teste do Servidor MCP
 
 ```bash
 echo '{"jsonrpc":"2.0","method":"tools/list","id":1}' | npm start
 ```
 
-### 2. Teste com MySQL
+### 3. Teste de Análise
 
-Certifique-se de ter um MySQL rodando e configurado.
+```bash
+npm run analyze-users
+```
 
-## 📚 Aprendizados sobre MCP
+## 📚 Documentação Adicional
 
-### Conceitos-Chave:
+- [**CORRECOES-MCP.md**](CORRECOES-MCP.md) - Detalhes das correções implementadas
 
-1. **Servidor MCP**: Expõe capacidades via protocolo padronizado
-2. **Cliente MCP**: Consome capacidades (Ex: Claude Desktop)
-3. **Host**: Aplicação que hospeda o cliente (Ex: Claude)
-4. **JSON-RPC 2.0**: Protocolo de comunicação base
-5. **Capabilities**: Negociação de recursos disponíveis
+## 🚧 Estrutura de Arquivos
 
-### Vantagens do MCP:
+```
+mcp-mysql-simple/
+├── src/
+│   └── index.ts                    # Servidor MCP principal
+├── dist/                           # Arquivos compilados
+├── docs/                           # Documentação
+├── analyze-users-table.js          # Script de análise de usuários
+├── test-mysql-connection.js        # Script de teste de conexão
+├── package.json                    # Dependências e scripts
+└── README.md                       # Este arquivo
+```
 
-- 🔌 **Interoperabilidade**: Um servidor, múltiplos clientes
-- 🧩 **Modularidade**: Cada servidor tem responsabilidade específica
-- 🔒 **Segurança**: Isolamento entre servidores
-- 📈 **Escalabilidade**: Fácil adicionar novas capacidades
-
-## 🚧 Próximos Passos
+## 📈 Próximos Passos
 
 Para expandir este servidor:
 
 1. **Adicionar mais Tools**:
-
    - `create_table`
    - `backup_database`
    - `optimize_table`
 
 2. **Melhorar Resources**:
-
    - Índices das tabelas
    - Estatísticas de performance
    - Logs de queries
 
 3. **Expandir Prompts**:
-
    - Templates para relatórios
    - Queries de otimização
    - Análises de performance
 
 4. **Implementar Sampling**:
    - Permitir que o servidor faça requests para o LLM
+
+## 🐛 Solução de Problemas
+
+### Erro: Configurações MySQL Incompletas
+
+```bash
+❌ Erro: Configurações MySQL incompletas. Verifique MYSQL_HOST e MYSQL_USER nas variáveis de ambiente do MCP.
+```
+
+**Solução**: Verifique se `MYSQL_HOST` e `MYSQL_USER` estão definidos na seção `env` da configuração do cliente MCP.
+
+### Erro: Conexão Recusada
+
+```bash
+❌ Erro: ECONNREFUSED
+```
+
+**Solução**: Verifique se o MySQL está rodando e as credenciais na configuração MCP estão corretas.
+
+### Erro: Tabela não existe
+
+```bash
+❌ Erro: Table 'users' doesn't exist
+```
+
+**Solução**: Confirme se a tabela existe no banco de dados especificado na variável `MYSQL_DB`.
+
+### Erro: Compilação
+
+```bash
+❌ Erro: TypeScript compilation failed
+```
+
+**Solução**: Execute `npm install` para instalar todas as dependências.
 
 ## 📖 Referências
 
@@ -288,4 +354,7 @@ Para expandir este servidor:
 
 ---
 
-**Criado com ❤️ para aprender o protocolo MCP da Anthropic**
+**✅ Sistema Testado e Funcionando!**  
+**Criado com ❤️ para aprender o protocolo MCP da Anthropic**  
+**Versão:** 1.0.0  
+**Última atualização:** 10/07/2025

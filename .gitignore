@@ -1,3 +1,8 @@
 node_modules
 dist
 .env
+
+# Arquivos de configuração local (usar apenas variáveis de ambiente do MCP)
+config*.json
+*.config.json
+.env.*
