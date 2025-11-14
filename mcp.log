@@ -1,0 +1,4 @@
+nohup: ignorando entrada
+✅ Configuração MySQL carregada das variáveis de ambiente do MCP
+🔗 Conectando em: mysql-admin-prd.voompcreators.net:3306 (usuário: rodrigo_silveira)
+🚀 Servidor MCP MySQL iniciado! Aguardando conexões...

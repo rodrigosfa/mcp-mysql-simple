@@ -39,6 +39,7 @@ class MySQLMCPServer {
   constructor() {
     // Carrega configuração do MySQL
     this.config = this.loadMySQLConfig();
+	// Versão correta
 
     // Inicializa o servidor MCP
     this.server = new Server(
@@ -374,6 +375,10 @@ class MySQLMCPServer {
 
   // Métodos auxiliares para executar operações MySQL
 
+  /**
+   * Executa uma query SQL no banco MySQL.
+   * Usa connection.query para todas as queries para evitar problemas com prepared statements.
+   */
   private async executeQuery(query: string, database?: string): Promise<any> {
     if (!this.connection) {
       throw new Error("Não conectado ao MySQL");
@@ -382,10 +387,11 @@ class MySQLMCPServer {
     try {
       // Muda para o banco específico se fornecido
       if (database) {
-        await this.connection.execute(`USE \`${database}\``);
+        await this.connection.query(`USE \`${database}\``);
       }
 
-      const [rows, fields] = await this.connection.execute(query);
+      // Usa query simples para todas as operações para evitar problemas com prepared statements
+      const [rows, fields] = await this.connection.query(query);
 
       return {
         content: [
@@ -415,10 +421,10 @@ class MySQLMCPServer {
 
     try {
       if (database) {
-        await this.connection.execute(`USE \`${database}\``);
+        await this.connection.query(`USE \`${database}\``);
       }
 
-      const [rows] = await this.connection.execute(`DESCRIBE \`${tableName}\``);
+      const [rows] = await this.connection.query(`DESCRIBE \`${tableName}\``);
 
       return {
         content: [
@@ -445,10 +451,10 @@ class MySQLMCPServer {
 
     try {
       if (database) {
-        await this.connection.execute(`USE \`${database}\``);
+        await this.connection.query(`USE \`${database}\``);
       }
 
-      const [rows] = await this.connection.execute("SHOW TABLES");
+      const [rows] = await this.connection.query("SHOW TABLES");
 
       return {
         content: [
@@ -474,7 +480,7 @@ class MySQLMCPServer {
     }
 
     try {
-      const [rows] = await this.connection.execute("SHOW DATABASES");
+      const [rows] = await this.connection.query("SHOW DATABASES");
 
       return {
         contents: [
@@ -497,7 +503,7 @@ class MySQLMCPServer {
     }
 
     try {
-      const [rows] = await this.connection.execute("SHOW TABLES");
+      const [rows] = await this.connection.query("SHOW TABLES");
 
       return {
         contents: [
@@ -521,12 +527,12 @@ class MySQLMCPServer {
 
     try {
       // Obtém informações do schema
-      const [tables] = await this.connection.execute("SHOW TABLES");
+      const [tables] = await this.connection.query("SHOW TABLES");
       const schema: any = { tables: [] };
 
       for (const table of tables as any[]) {
         const tableName = Object.values(table)[0] as string;
-        const [columns] = await this.connection.execute(
+        const [columns] = await this.connection.query(
           `DESCRIBE \`${tableName}\``
         );
         schema.tables.push({
