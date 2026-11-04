@@ -8,11 +8,11 @@ import mysql from "mysql2/promise";
 
 async function testSimpleQuery() {
   const config = {
-    host: process.env.MYSQL_HOST || "mysql-admin-prd.voompcreators.net",
-    port: parseInt(process.env.MYSQL_PORT || "3306"),
-    user: process.env.MYSQL_USER || "rodrigo_silveira",
-    password: process.env.MYSQL_PASS || "GO4PC@diGr5N",
-    database: process.env.MYSQL_DB || "voompcreators_back_prd",
+    host: process.env.MYSQL_HOST",
+    port: parseInt(process.env.MYSQL_PORT),
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASS,
+    database: process.env.MYSQL_DB,
   };
 
   console.log("🔍 Testando queries simples...");
