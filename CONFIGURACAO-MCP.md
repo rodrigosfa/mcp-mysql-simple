@@ -20,11 +20,11 @@ Você precisa atualizar o arquivo de configuração do MCP em `~/.cursor/mcp.jso
   "command": "node",
   "args": ["/home/rodrigosfa/Projetos/Cogna/mcp-mysql-simple/dist/index.js"],
   "env": {
-    "MYSQL_HOST": "mysql-admin-prd.voompcreators.net",
+    "MYSQL_HOST": "host.com",
     "MYSQL_PORT": "3306",
-    "MYSQL_USER": "rodrigo_silveira",
-    "MYSQL_PASS": "GO4PC@diGr5N",
-    "MYSQL_DB": "voompcreators_back_prd"
+    "MYSQL_USER": "username",
+    "MYSQL_PASS": "pass",
+    "MYSQL_DB": "dbname"
   }
 }
 ```
@@ -35,11 +35,11 @@ Você precisa atualizar o arquivo de configuração do MCP em `~/.cursor/mcp.jso
   "command": "/home/rodrigosfa/Projetos/Cogna/mcp-mysql-simple/start-mcp.sh",
   "args": [],
   "env": {
-    "MYSQL_HOST": "mysql-admin-prd.voompcreators.net",
+    "MYSQL_HOST": "host.com",
     "MYSQL_PORT": "3306",
-    "MYSQL_USER": "rodrigo_silveira",
-    "MYSQL_PASS": "GO4PC@diGr5N",
-    "MYSQL_DB": "voompcreators_back_prd"
+    "MYSQL_USER": "username",
+    "MYSQL_PASS": "pass",
+    "MYSQL_DB": "dbname"
   }
 }
 ```
