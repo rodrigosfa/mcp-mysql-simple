@@ -18,7 +18,7 @@ Você precisa atualizar o arquivo de configuração do MCP em `~/.cursor/mcp.jso
 ```json
 "mysql-simple": {
   "command": "node",
-  "args": ["/home/rodrigosfa/Projetos/Cogna/mcp-mysql-simple/dist/index.js"],
+  "args": ["./dist/index.js"],
   "env": {
     "MYSQL_HOST": "host.com",
     "MYSQL_PORT": "3306",
@@ -32,7 +32,7 @@ Você precisa atualizar o arquivo de configuração do MCP em `~/.cursor/mcp.jso
 ### Configuração Corrigida (FUNCIONAL):
 ```json
 "mysql-simple": {
-  "command": "/home/rodrigosfa/Projetos/Cogna/mcp-mysql-simple/start-mcp.sh",
+  "command": "./start-mcp.sh",
   "args": [],
   "env": {
     "MYSQL_HOST": "host.com",
@@ -48,8 +48,8 @@ Você precisa atualizar o arquivo de configuração do MCP em `~/.cursor/mcp.jso
 
 1. Abra o arquivo `~/.cursor/mcp.json`
 2. Localize a seção `"mysql-simple"`
-3. Substitua a linha `"command": "node"` por `"command": "/home/rodrigosfa/Projetos/Cogna/mcp-mysql-simple/start-mcp.sh"`
-4. Substitua a linha `"args": ["/home/rodrigosfa/Projetos/Cogna/mcp-mysql-simple/dist/index.js"]` por `"args": []`
+3. Substitua a linha `"command": "node"` por `"command": "./start-mcp.sh"`
+4. Substitua a linha `"args": ["./dist/index.js"]` por `"args": []`
 5. Salve o arquivo
 6. Reinicie o Cursor
 
